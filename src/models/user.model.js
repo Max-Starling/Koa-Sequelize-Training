@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../sequalize');
+const Task = require('./task.model');
 
 const Model = Sequelize.Model;
 
@@ -20,9 +21,11 @@ User.init({
     type: Sequelize.STRING,
     allowNull: false
   }
-  }, {
-    sequelize,
-    modelName: 'user'
+}, {
+  sequelize,
+  modelName: 'user'
 });
+
+User.hasMany(Task, { foreignKey: 'userId', constraints: false });
 
 module.exports = User;

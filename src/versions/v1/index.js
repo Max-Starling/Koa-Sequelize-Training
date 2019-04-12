@@ -1,10 +1,9 @@
-const Router = require('koa-router');
-const router = new Router();
-const controller = require('./controller');
+const projectRoutes = require('./resources/project');
+const userRoutes = require('./resources/user');
+const taskRoutes = require('./resources/task');
 
-console.log(controller.getUsers);
-
-router.get('/', controller.getUsers);
-router.post('/', controller.addUser);
-
-module.exports = router.routes();
+module.exports = ({
+    "/project":  projectRoutes,
+    "/user":  userRoutes,
+    "/task": taskRoutes,
+});

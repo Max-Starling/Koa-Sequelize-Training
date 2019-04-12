@@ -1,6 +1,7 @@
 const Router = require('koa-router');
+const controller = require('./user.controller');
+
 const router = new Router();
-const controller = require('./controller');
 
 router.get('/', controller.getUsers);
 router.post('/', controller.addUser);

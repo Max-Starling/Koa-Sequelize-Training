@@ -1,21 +1,18 @@
 const sequelize = require('../sequalize');
+const Project = require('../models/project.model');
 const User = require('../models/user.model');
-const uuid = require('uuid');
+const Task = require('../models/task.model');
 
 module.exports.init = async () => {
-  // await User.sync({ force: true });
-  // await User.create({ id: uuid(), firstName: "Jane", lastName: "Doe" });
-
   sequelize.authenticate()
     .then(async () => {
       console.log('Connection has been established successfully.');
 
-      await User.sync({ force: false });
-
-      const users = await User.findAll();
-      console.log("All users:", JSON.stringify(users, null, 4));
+      await Project.sync({ force: true });
+      await User.sync({ force: true });
+      await Task.sync({ force: true });
     })
     .catch(err => {
       console.error('Unable to connect to the database:', err);
     });
-  }
+};
