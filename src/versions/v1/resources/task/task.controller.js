@@ -3,6 +3,26 @@ const sequelize = require('../../../../sequalize');
 const Task = require('../../../../models/task.model');
 const User = require('../../../../models/user.model');
 
+module.exports.getTaskById = async (ctx) => {
+    const { id } = ctx.params;
+
+    try {
+      await sequelize.authenticate();
+
+      const task = await Task.findByPk(id);
+      if (!task) {
+        ctx.body = `Task with id ${id} wasn't found`;
+        return;
+      }
+      ctx.body = task;
+      return;
+    } catch(e) {
+        console.log("unexpected error occured: ", e);
+    }
+    ctx.body = 'Wrong body';
+    return;
+};
+
 module.exports.getTasks = async (ctx) => {
     try {
       await sequelize.authenticate();
