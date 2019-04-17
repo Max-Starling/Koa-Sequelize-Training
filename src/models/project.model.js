@@ -15,7 +15,12 @@ Project.init({
   name: {
     type: Sequelize.STRING,
     allowNull: false
-  }
+  },
+  // counter: {
+  //   type: Sequelize.NUMBER,
+  //   allowNull: false,
+  //   defaultValue: 0
+  // }
 }, {
   sequelize,
   modelName: 'project'

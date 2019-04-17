@@ -2,6 +2,7 @@ const uuid = require('uuid');
 const sequelize = require('../../../../sequalize');
 const User = require('../../../../models/user.model');
 const Task = require("../../../../models/task.model");
+const validateAdding = require('./validators/add.validator');
 
 module.exports.getUserById = async (ctx) => {
     const { id } = ctx.params;
@@ -54,11 +55,19 @@ module.exports.addUser = async (ctx) => {
 
         try {
             await sequelize.authenticate();
+            const userData = {
+              firstName,
+              lastName,
+              projectId
+            };
+            const error = await validateAdding(userData);
+            if (error && error.message) {
+                ctx.body = error.message;
+                return;
+            }
             const user = await User.create({
                 id: uuid(),
-                firstName,
-                lastName,
-                projectId
+                ...userData
             });
             console.log(`User ${user.firstName} ${user.lastName} was created with id: ${user.id}`);
             ctx.body = `User ${user.firstName} ${user.lastName} was created with id: ${user.id}`;

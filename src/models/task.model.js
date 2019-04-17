@@ -25,6 +25,11 @@ Task.init({
     type: Sequelize.STRING,
     allowNull: false
   },
+  // counter: {
+  //   type: Sequelize.NUMBER,
+  //   allowNull: false,
+  //   defaultValue: 0
+  // }
   // userId: {
   //   type: Sequelize.STRING,
   //   references: {
