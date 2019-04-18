@@ -1,5 +1,5 @@
 const uuid = require('uuid');
-const sequelize = require('../../../../sequalize');
+const sequelize = require('../../../../sequelize');
 const Task = require('../../../../models/task.model');
 const validateAdding = require('./validators/add.validator');
 

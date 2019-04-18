@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-const sequelize = require('../sequalize');
+const sequelize = require('../sequelize');
 const User = require('./user.model');
 
 const Model = Sequelize.Model;
