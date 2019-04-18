@@ -1,82 +1,89 @@
-const uuid = require('uuid');
-const sequelize = require('../../../../sequelize');
-const User = require('../../../../models/user.model');
-const Task = require("../../../../models/task.model");
-const validateAdding = require('./validators/add.validator');
+const userService = require('./user.service');
 
 module.exports.getUserById = async (ctx) => {
-    const { id } = ctx.params;
-    const { tasks } = ctx.query;
+  const { id } = ctx.params;
+  const { tasks } = ctx.query;
 
-    try {
-      await sequelize.authenticate();
+  try {
+    const searchOptions = { tasks };
+    const { error, value } = await userService.getUserById(id, searchOptions);
 
-      const searchOptions = {};
-      if (tasks) {
-        searchOptions.include = [ Task ];
-      }
-
-      const user = await User.findByPk(id, searchOptions);
-      if (!user) {
-        ctx.body = `User with id ${id} wasn't found`;
-        return;
-      }
-      ctx.body = user;
-      return;
-    } catch(e) {
-        console.log("unexpected error occured: ", e);
+    if (error) {
+      ctx.status = error.status;
+      ctx.body = { ...error };
+    } else if (value) {
+      ctx.status = 200;
+      ctx.body = value;
     }
-    ctx.body = 'Wrong body';
-    return;
+  } catch(error) {
+    ctx.status = 500;
+    console.log("user controller error", error.name, error.message);
+    ctx.body = error.message;
+  }
 };
 
 module.exports.getUsers = async (ctx) => {
-    const { tasks } = ctx.query;
+  const { tasks } = ctx.query;
 
-    try {
-      await sequelize.authenticate();
-      const searchOptions = {};
-      if (tasks) {
-        searchOptions.include = [Task];
-      }
-      const users = await User.findAll(searchOptions);
-      ctx.body = users;
-      return;
-    } catch(e) {
-        console.log("unexpected error occured: ", e);
+  try {
+    const searchOptions = { tasks };
+    const { error, value } = await userService.getUsers(searchOptions);
+
+    if (error) {
+      ctx.status = error.status;
+      ctx.body = { ...error };
+    } else if (value) {
+      ctx.status = 200;
+      ctx.body = value;
     }
-    ctx.body = 'Wrong body';
-    return;
+  } catch(error) {
+    ctx.status = 500;
+    console.log("user controller error", error.name, error.message);
+    ctx.body = error.message;
+  }
 };
 
 module.exports.addUser = async (ctx) => {
-    if (ctx.request.body) {
-        const { firstName, lastName, projectId } = ctx.request.body;
+  const { firstName, lastName, projectId } = ctx.request.body;
 
-        try {
-            await sequelize.authenticate();
-            const userData = {
-              firstName,
-              lastName,
-              projectId
-            };
-            const error = await validateAdding(userData);
-            if (error && error.message) {
-                ctx.body = error.message;
-                return;
-            }
-            const user = await User.create({
-                id: uuid(),
-                ...userData
-            });
-            console.log(`User ${user.firstName} ${user.lastName} was created with id: ${user.id}`);
-            ctx.body = `User ${user.firstName} ${user.lastName} was created with id: ${user.id}`;
-            return;
-        } catch(e) {
-            console.log("unexpected error occured: ", e);
-        }
+  try {
+    const userData = {
+      firstName,
+      lastName,
+      projectId
+    };
+    const { error, value } = await userService.addUser(userData);
+
+    if (error) {
+      ctx.status = error.status;
+      ctx.body = error;
+    } else if (value) {
+      ctx.status = 201;
+      ctx.body = value;
     }
+  } catch(error) {
+    ctx.status = 500;
+    console.log("user controller error", error.name, error.message);
+    ctx.body = error.message;
+  }
+};
 
-    ctx.body = 'Wrong body';
-    return;
+module.exports.deleteUser = async (ctx) => {
+  const { id } = ctx.params;
+
+  try {
+    const { error, value } = await userService.deleteUser(id);
+
+    if (error) {
+      ctx.status = error.status;
+      ctx.body = error;
+    } else if (value) {
+      ctx.status = 200;
+      ctx.body = value;
+    }
+  } catch(error) {
+    ctx.status = 500;
+    console.log("user controller error", error.name, error.message);
+    ctx.body = error.message;
+  }
 };

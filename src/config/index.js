@@ -1,4 +1,4 @@
-const sequelizeConfig = require('./sequelize.json');
+const sequelizeConfig = require('./sequelize.js');
 
 const port = parseInt(process.env.PORT, 10) || 3000;
 

@@ -1,70 +1,85 @@
-const uuid = require('uuid');
-const sequelize = require('../../../../sequelize');
-const Task = require('../../../../models/task.model');
-const validateAdding = require('./validators/add.validator');
+const taskService = require('./task.service');
 
 module.exports.getTaskById = async (ctx) => {
-    const { id } = ctx.params;
+  const { id } = ctx.params;
 
-    try {
-      await sequelize.authenticate();
+  try {
+    const { error, value } = await taskService.getTaskById(id);
 
-      const task = await Task.findByPk(id);
-      if (!task) {
-        ctx.body = `Task with id ${id} wasn't found`;
-        return;
-      }
-      ctx.body = task;
-      return;
-    } catch(e) {
-        console.log("unexpected error occured: ", e);
+    if (error) {
+      ctx.status = error.status;
+      ctx.body = { ...error };
+  } else if (value) {
+      ctx.status = 200;
+      ctx.body = value;
     }
-    ctx.body = 'Wrong body';
-    return;
+  } catch(error) {
+    ctx.status = 500;
+    console.log("task controller error", error.name, error.message);
+    ctx.body = error.message;
+  }
 };
 
 module.exports.getTasks = async (ctx) => {
-    try {
-      await sequelize.authenticate();
-      const tasks = await Task.findAll();
-      ctx.body = tasks;
-      return;
-    } catch(e) {
-        console.log("unexpected error occured: ", e);
+  try {
+    const { error, value } = await taskService.getTasks();
+
+    if (error) {
+      ctx.status = error.status;
+      ctx.body = { ...error };
+    } else if (value) {
+      ctx.status = 200;
+      ctx.body = value;
     }
-    ctx.body = 'Wrong body';
-    return;
+  } catch(error) {
+    ctx.status = 500;
+    console.log("task controller error", error.name, error.message);
+    ctx.body = error.message;
+  }
 };
 
 module.exports.addTask = async (ctx) => {
-    if (ctx.request.body) {
-        const { title, description, estimatedTime, userId } = ctx.request.body;
+  const { title, description, estimatedTime, userId } = ctx.request.body;
 
-        try {
-            await sequelize.authenticate();
-            const taskData = {
-                title,
-                description,
-                estimatedTime,
-                userId
-            };
-            const error = await validateAdding(taskData);
-            if (error && error.message) {
-                ctx.body = error.message;
-                return;
-            }
-            const task = await Task.create({
-                id: uuid(),
-                ...taskData,
-            });
-            console.log(`Task ${task.title} was created with id: ${task.id}`);
-            ctx.body = `Task ${task.title} was created with id: ${task.id}`;
-            return;
-        } catch(e) {
-            console.log("unexpected error occured: ", e);
-        }
+  try {
+    const taskData = {
+      title,
+      description,
+      estimatedTime,
+      userId
+    };
+    const { error, value } = await taskService.addTask(taskData);
+
+    if (error) {
+      ctx.status = error.status;
+      ctx.body = error;
+    } else if (value) {
+      ctx.status = 201;
+      ctx.body = value;
     }
+  } catch(error) {
+    ctx.status = 500;
+    console.log("task controller error", error.name, error.message);
+    ctx.body = error.message;
+  }
+};
 
-    ctx.body = 'Wrong body';
-    return;
+module.exports.deleteProject = async (ctx) => {
+  const { id } = ctx.params;
+
+  try {
+    const { error, value } = await taskService.deleteTask(id);
+
+    if (error) {
+      ctx.status = error.status;
+      ctx.body = error;
+    } else if (value) {
+      ctx.status = 200;
+      ctx.body = value;
+    }
+  } catch(error) {
+    ctx.status = 500;
+    console.log("task controller error", error.name, error.message);
+    ctx.body = error.message;
+  }
 };

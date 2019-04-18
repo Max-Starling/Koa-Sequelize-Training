@@ -5,6 +5,7 @@ const axios = require('axios');
 const validate = require('./validators/add.validator');
 const validateProject = require('./project.schema');
 const sequelizeService = require('../../../../services/sequelize.service');
+const config = require('../../../../config');
 
 chai.should();
 
@@ -48,17 +49,17 @@ describe('test project API', () => {
 
   describe('get projects', () => {
     it('get projects should return status 200', async () => {
-      const { status } = await axios.get('http://localhost:3000/v1/project');
+      const { status } = await axios.get(`${config.apiUrl}/v1/project`);
       status.should.equal(200);
     });
 
     it('get projects should return array', async () => {
-      const { data } = await axios.get('http://localhost:3000/v1/project');
+      const { data } = await axios.get(`${config.apiUrl}/v1/project`);
       expect(data).to.be.an('array');
     });
 
     it('get projects should return array of valid projects', async () => {
-      const { data } = await axios.get('http://localhost:3000/v1/project');
+      const { data } = await axios.get(`${config.apiUrl}/v1/project`);
       expect(validateProject(data[0])).to.be.a('null');
     });
   });
@@ -70,7 +71,7 @@ describe('test project API', () => {
       const projectData = { name: 'invalid naaaaaaaaaaaaaaaaaaaaaaaaaaaaaame' };
 
       try {
-        await axios.post('http://localhost:3000/v1/project', projectData);
+        await axios.post(`${config.apiUrl}/v1/project`, projectData);
       } catch (e) {
         if (e.response) {
           e.response.status.should.equal(404);
@@ -83,24 +84,24 @@ describe('test project API', () => {
     it('add project should return status 201', async () => {
       const projectData = { name: 'valid test name' };
   
-      const { data, status } = await axios.post('http://localhost:3000/v1/project', projectData);
+      const { data, status } = await axios.post(`${config.apiUrl}/v1/project`, projectData);
       projectId = data.id;
       status.should.equal(201);
     });
 
     it('get project should return valid project', async () => {
-      const { data } = await axios.get(`http://localhost:3000/v1/project/${projectId}`);
+      const { data } = await axios.get(`${config.apiUrl}/v1/project/${projectId}`);
       expect(validateProject(data)).to.be.a('null');
     });
   
     it('delete project should return status 200', async () => {  
-      const { status } = await axios.delete(`http://localhost:3000/v1/project/${projectId}`);
+      const { status } = await axios.delete(`${config.apiUrl}/v1/project/${projectId}`);
       status.should.equal(200);
     });
 
     it('get project should return status 404', async () => {
       try {
-        await await axios.get(`http://localhost:3000/v1/project/${projectId}`);
+        await await axios.get(`${config.apiUrl}/v1/project/${projectId}`);
       } catch (e) {
         if (e.response) {
           e.response.status.should.equal(404);
