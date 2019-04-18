@@ -1,12 +1,11 @@
 const Sequelize = require('sequelize');
+const config = require('./config/sequalize.json')
 
 const sequelize = new Sequelize(
-  'starling',
-  'root',
-  'fafafa', {
-    host: 'localhost',
-    dialect: 'mysql'
-  },
+  config.database,
+  config.username,
+  config.password,
+  config,
 );
 
 module.exports = sequelize;

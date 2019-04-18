@@ -1,10 +1,10 @@
 const Router = require('koa-router');
 const versions = require('./versions');
-const init = require('./services/init.service');
+// const init = require('./services/init.service');
 
 const router = new Router();
 
-router.get('/', init);
+// router.get('/', init);
 
 const defineRoutes = (app) => {
   app.use(router.routes());

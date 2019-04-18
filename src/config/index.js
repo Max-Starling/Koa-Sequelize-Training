@@ -1,8 +1,16 @@
+const sequelizeConfig = require('./sequelize.json');
 
 const port = parseInt(process.env.PORT, 10) || 3000;
 
-module.exports = {
+const env = process.env.NODE_ENV || 'development';
+
+const config = {
+  development: {
     apiUrl: `http://localhost:${port}`,
-    port
+    port,
+    sequelizeConfig: sequelizeConfig.development
+  }
 };
+
+module.exports = config[env];
 

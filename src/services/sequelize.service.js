@@ -1,4 +1,4 @@
-const sequelize = require('../sequalize');
+const sequelize = require('../sequelize');
 const Project = require('../models/project.model');
 const User = require('../models/user.model');
 const Task = require('../models/task.model');
@@ -15,4 +15,13 @@ module.exports.init = async () => {
     .catch(err => {
       console.error('Unable to connect to the database:', err);
     });
+};
+
+module.exports.check = async () => {
+  try {
+    await sequelize.authenticate();
+    return true;
+  } catch (e) {
+    return false;
+  }
 };

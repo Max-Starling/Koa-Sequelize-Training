@@ -1,9 +1,9 @@
 const Koa = require('koa');
 const bodyParser = require('koa-bodyparser');
-const config = require('./config');
 const defineRoutes = require('./defineRoutes');
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
+const config = require('./config');
 
 const app = new Koa();
 
